@@ -1,0 +1,114 @@
+﻿@page
+@model TESTS_PI2.Pages.OrderLoadingModel
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@{
+	Layout = null;
+}
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta name="viewport" content="width=device-width" />
+		<title>OrderLoading</title>
+	</head>
+	<body>
+		<div>
+			<h1>Order Loading</h1><br />
+			<form method="post" enctype="multipart/form-data">
+				<span>Select the file to import</span>
+				<input type="file" name="uploadedFiles"/>
+				<input type="submit" value="Upload" asp-page-handler="Upload"/>
+				<br />
+				<span>@Html.Raw(Model.Msg)</span>			
+			</form>
+		</div>
+		<div>
+			@if (Model.RenderLoading)
+			{
+				<div>					
+					<button type="button" asp-page-handler="OrderRead">Read uploaded orders</button>
+					@if(Model.RenderAnalysis){
+						<span>@Html.Raw(Model.orderLoadMsg)</span>
+					}
+				</div>
+			}
+			else
+			{
+				
+			}
+		</div>
+		@if (Model.RenderAnalysis)
+		{
+			<div>
+				@* Div for filters to apply to the base data *@
+				@*Button to apply the filter and output in the appropriate variable 
+				with another button to either display the image on screen or maybe download the image generated	*@
+				<div>
+					@*Div for symbol filtering*@
+					<form method="post">
+						Enter the symbol to filter by: <input type="text" name="symbol" />
+						<input type="submit" value="Filter with this symbol" asp-page-handler="FilterSymbol" />
+					</form>					
+				</div>
+				<div>
+					@*Div for date filtering*@
+					@*F that one in particular*@
+					<form method="post">
+					Enter the start date to filter by: <input type="date" name="startDate" />
+					<span>Enter the end date to filter by: </span><input type="date" name="endDate" />
+					<input type="submit" value="Filter with this date" asp-page-handler="FilterDate" />
+						
+					</form>
+				</div>
+				<div>
+					@*Div for order time frame filtering*@
+					<form method="post">
+						<span> Filtering by time frame (select values between 0 and 23, start hour must be lower than end hour) </span>					
+						<span>Enter the starting hour : </span><input type="number" name="startHour" />
+						<span>Enter the ending hour : </span><input type="number" name="endHour" />
+						<input type="submit" value="Filter with this time frame" asp-page-handler="FilterFrame" />
+					</form>
+				</div>
+				<div>
+					@*Div for order type filtering*@
+					
+					<form method="post">
+						<span>Filtering by type of order (buy/sell)</span>
+						<input type="radio" name="type" value="true"><label for="buy">Buy</label>
+						<input type="radio" name="type" value="false"><label for="sell">Sell</label>
+						<input type="submit" value="Filter with this type of order" asp-page-handler="FilterType" />
+					</form>
+				</div>
+				<div>
+					@*Div for order fill% filtering*@
+					<form method="post">
+						<span>Filtering by % of order filled</span>
+						<span>Enter the minimum % of order filled : </span><input type="number" name="minFill" />
+						<input type="submit" value="Filter with this % of order filled" asp-page-handler="FilterFill" />
+					</form>
+				</div>
+			</div>
+		}
+		<div>
+			<p>Enter the parameters for the filter : </p>
+			<form method="post">
+				<span>Enter the symbol to filter by : </span><input type="text" name="symbol" />
+				<span>Enter the start date to filter by : </span><input type="date" name="startDate" />
+				<span>Enter the end date to filter by : </span><input type="date" name="endDate" />
+				<span>Enter the starting hour : </span><input type="number" name="startHour" />
+				<span>Enter the ending hour : </span><input type="number" name="endHour" />
+				<input type="radio" name="type" value="true"><label for="buy">Buy</label>
+				<input type="radio" name="type" value="false"><label for="sell">Sell</label>
+				<input type="radio" name="type" value="null"><label for="null">Buy and Sell</label>
+				<span>Enter the minimum % of order filled : </span><input type="number" name="minFill" />
+				<input type="submit" value="Filter with these parameters" asp-page-handler="FilterAll" />
+			</form>
+		</div>
+		<div>
+		@if(Model.plotmodel != null)
+		{
+			<BlazorPlotView Width="100%" Height="100%" Model="@Model.plotmodel" />
+		}
+		</div>
+	
+	</body>
+</html>
